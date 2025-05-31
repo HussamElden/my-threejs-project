@@ -6,30 +6,63 @@ const scene = new THREE.Scene();
 
 // Camera setup
 const camera = new THREE.PerspectiveCamera(
-  75, // field of view
+  85, // field of view
   window.innerWidth / window.innerHeight, // aspect ratio
   0.1, // near clipping
   1000 // far clipping
 );
 
 // Move the camera back to "zoom out"
-camera.position.set(0, 2, 6); // increase Z to zoom out more
-
+camera.position.set(0, 5, 6); // increase Z to zoom out more
 // Renderer setup
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Add light so we can see the model
-const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 4);
 scene.add(ambientLight);
+scene.background = new THREE.Color(0x87ceeb); // SkyBlue
+
+// Create video texture
+
+const video = document.createElement("video");
+video.src = "/bamoot.mp4"; // local file, no CORS issue
+video.autoplay = true;
+video.loop = true;
+video.muted = true;
+video.playsInline = true;
+video.load();
+document.addEventListener("click", () => {
+  video.muted = false;
+  video.play();
+});
+
+const videoTexture = new THREE.VideoTexture(video);
+videoTexture.minFilter = THREE.LinearFilter;
+videoTexture.magFilter = THREE.LinearFilter;
+videoTexture.format = THREE.RGBFormat;
+videoTexture.center.set(0.5, 0.5); // rotate around center
+videoTexture.rotation = Math.PI / 2; // 90 degrees in radians
+
+const videoMaterial = new THREE.MeshBasicMaterial({ map: videoTexture });
 
 // Load model
 const loader = new GLTFLoader();
 loader.load(
-  "/corner_cafe.glb", // path to your GLTF model
+  "/untitled6.glb", // path to your GLTF model
   (gltf) => {
     const model = gltf.scene;
+    model.traverse((child) => {
+      if (
+        child.isMesh &&
+        child.material &&
+        child.material.name === "Material.001"
+      ) {
+        child.material = videoMaterial;
+      }
+    });
+
     scene.add(model);
   },
   (xhr) => {
@@ -47,6 +80,19 @@ loader.load(
 
 const controls = new OrbitControls(camera, renderer.domElement);
 
+// LIMIT VERTICAL ROTATION (up/down)
+controls.minPolarAngle = Math.PI / 4; // 45 degrees
+controls.maxPolarAngle = Math.PI / 2; // 90 degrees
+
+// LIMIT HORIZONTAL ROTATION (left/right)
+controls.minAzimuthAngle = -Math.PI / 4; // -45 degrees
+controls.maxAzimuthAngle = Math.PI / 4; // 45 degrees
+
+// Optional extras
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.rotateSpeed = 0.5;
+controls.target.set(0, 3, 1); // e.g., for a model centered at y = 2
 function animate() {
   requestAnimationFrame(animate);
 
@@ -55,53 +101,3 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
-
-// // Camera setup
-// const camera = new THREE.PerspectiveCamera(
-//   75,
-//   window.innerWidth / window.innerHeight,
-//   0.1,
-//   1000
-// );
-
-// // Renderer setup
-// const renderer = new THREE.WebGLRenderer({ antialias: true });
-// renderer.setSize(window.innerWidth, window.innerHeight);
-// document.body.appendChild(renderer.domElement);
-
-// // Cube (geometry + material)
-// const geometry = new THREE.BoxGeometry();
-// const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-// const cube = new THREE.Mesh(geometry, material);
-// scene.add(cube);
-
-// // Lighting
-// const light = new THREE.DirectionalLight(0xffffff, 1);
-// light.position.set(5, 10, 7.5);
-// scene.add(light);
-
-// // Optional: Ambient light for soft fill
-// const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
-// scene.add(ambientLight);
-
-// // Camera position
-// camera.position.z = 5;
-
-// // Animation loop
-// function animate() {
-//   requestAnimationFrame(animate);
-//   cube.rotation.x += 0.01;
-//   cube.rotation.y += 0.01;
-//   renderer.render(scene, camera);
-// }
-
-// animate();
-
-// // Handle window resize (important in newer versions)
-// window.addEventListener("resize", () => {
-//   const width = window.innerWidth;
-//   const height = window.innerHeight;
-//   camera.aspect = width / height;
-//   camera.updateProjectionMatrix();
-//   renderer.setSize(width, height);
-// });
