@@ -27,7 +27,7 @@ scene.background = new THREE.Color(0x87ceeb); // SkyBlue
 // Create video texture
 
 const video = document.createElement("video");
-video.src = "/bamoot.mp4"; // local file, no CORS issue
+video.src = "assets/bamoot.mp4"; // local file, no CORS issue
 video.autoplay = true;
 video.loop = true;
 video.muted = true;
@@ -50,7 +50,7 @@ const videoMaterial = new THREE.MeshBasicMaterial({ map: videoTexture });
 // Load model
 const loader = new GLTFLoader();
 loader.load(
-  "/untitled6.glb", // path to your GLTF model
+  "assets/cornercafe.glb", // path to your GLTF model
   (gltf) => {
     const model = gltf.scene;
     model.traverse((child) => {
