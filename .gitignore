@@ -1,4 +1,6 @@
-# Ignore node_modules folder
+# Ignore node_modules folder.next
 node_modules/
 /generated/prisma
+.prisma
 .env
+.next
