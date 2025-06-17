@@ -30,15 +30,20 @@ export default function Layout({ children }) {
           <Button color="inherit" component={Link} href="/dashboard">
             Dashboard
           </Button>
+          {/* Admin/Manager Only Features */}
+          {(useAuth().user?.role === "ADMIN" || useAuth().user?.role === "MANAGER") && (
+            <>
+              <Button color="inherit" component={Link} href="/inventory">
+                Inventory
+              </Button>
+              <Button color="inherit" component={Link} href="/recipes">
+                Recipes
+              </Button>
+            </>
+          )}
           <Button color="inherit" onClick={handleLoginOpen}>
             Login
           </Button>
-          {/* Inventory Button (Admin Only) */}
-          {useAuth().user?.role === "ADMIN" && (
-            <Button color="inherit" component={Link} href="/inventory">
-              Inventory
-            </Button>
-          )}
           <LoginPopup open={loginOpen} onClose={handleLoginClose} />
         </Toolbar>
       </AppBar>
