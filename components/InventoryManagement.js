@@ -13,6 +13,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import AddIngredientDialog from "./AddIngredientDialog";
 import EditIngredientDialog from "./EditIngredientDialog";
+import { getUnitDisplayText } from "../lib/units";
 
 export default function InventoryManagement() {
   const [ingredients, setIngredients] = useState([]);
@@ -100,7 +101,7 @@ export default function InventoryManagement() {
                 <TableCell component="th" scope="row">
                   {ingredient.name}
                 </TableCell>
-                <TableCell align="right">{ingredient.unit}</TableCell>
+                <TableCell align="right">{getUnitDisplayText(ingredient.unit)}</TableCell>
                 <TableCell align="right">{ingredient.currentStock}</TableCell>
                 <TableCell align="right">{ingredient.costPerUnit}</TableCell>
                 <TableCell align="right">

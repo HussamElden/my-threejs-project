@@ -7,7 +7,16 @@ import {
   Button,
   TextField,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Box,
+  Typography,
+  Divider,
+  ListSubheader,
 } from "@mui/material";
+import { ALL_UNITS, MEASUREMENT_UNITS, getUnitsWithCategories } from "../lib/units";
 
 export default function AddIngredientDialog({
   open,
@@ -15,7 +24,7 @@ export default function AddIngredientDialog({
   refreshIngredients,
 }) {
   const [name, setName] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState("");
   const [currentStock, setCurrentStock] = useState("");
   const [cost, setCost] = useState("");
   const [error, setError] = useState("");
@@ -30,7 +39,7 @@ export default function AddIngredientDialog({
         },
         body: JSON.stringify({
           name,
-          unit: quantity,
+          unit: unit,
           currentStock: parseFloat(currentStock),
           cost: parseFloat(cost),
         }),
@@ -68,16 +77,25 @@ export default function AddIngredientDialog({
           onChange={(e) => setName(e.target.value)}
           sx={{ mb: 2 }}
         />
-        <TextField
-          margin="dense"
-          label="Unit"
-          type="text"
-          fullWidth
-          variant="outlined"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-          sx={{ mb: 2 }}
-        />
+        <FormControl fullWidth margin="dense" sx={{ mb: 2 }}>
+          <InputLabel>Unit</InputLabel>
+          <Select
+            value={unit}
+            label="Unit"
+            onChange={(e) => setUnit(e.target.value)}
+          >
+            {getUnitsWithCategories().map((categoryGroup) => [
+              <ListSubheader key={categoryGroup.category} disableSticky>
+                {categoryGroup.category}
+              </ListSubheader>,
+              ...categoryGroup.units.map((unitOption) => (
+                <MenuItem key={unitOption.value} value={unitOption.value}>
+                  {unitOption.label}
+                </MenuItem>
+              ))
+            ])}
+          </Select>
+        </FormControl>
         <TextField
           margin="dense"
           label="Stock"

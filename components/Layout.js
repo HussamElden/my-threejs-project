@@ -27,6 +27,9 @@ export default function Layout({ children }) {
           <Button color="inherit" component={Link} href="/scene">
             3D Scene
           </Button>
+          <Button color="inherit" component={Link} href="/menu">
+            Menu
+          </Button>
           <Button color="inherit" component={Link} href="/dashboard">
             Dashboard
           </Button>

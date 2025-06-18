@@ -13,8 +13,15 @@ import {
 import CoffeeIcon from "@mui/icons-material/Coffee";
 import LocalCafeIcon from "@mui/icons-material/LocalCafe";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
+
+  const handleViewMenu = () => {
+    router.push('/menu');
+  };
+
   return (
     <Box
       sx={{
@@ -59,17 +66,18 @@ export default function Home() {
             />
             <CardContent>
               <Typography variant="h5" component="div" gutterBottom>
-                Our Coffee Shop
+                Our Coffee & Bakery
               </Typography>
               <Typography variant="body1" color="text.secondary">
                 Experience the finest coffee in a cozy atmosphere. We source our
-                beans from sustainable farms around the world.
+                beans from sustainable farms and are preparing fresh bakery items daily.
               </Typography>
               <Button
                 variant="contained"
                 color="primary"
                 startIcon={<LocalCafeIcon />}
                 sx={{ mt: 2 }}
+                onClick={handleViewMenu}
               >
                 View Menu
               </Button>

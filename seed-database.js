@@ -84,8 +84,33 @@ async function seedDatabase() {
           category: 'Espresso',
         },
       }),
+      // Retail products
+      prisma.product.create({
+        data: {
+          name: 'Ethiopian Coffee Beans',
+          category: 'Beans',
+        },
+      }),
+      prisma.product.create({
+        data: {
+          name: 'Colombian Coffee Beans',
+          category: 'Beans',
+        },
+      }),
+      prisma.product.create({
+        data: {
+          name: 'Coffee Grinder',
+          category: 'Equipment',
+        },
+      }),
+      prisma.product.create({
+        data: {
+          name: 'French Press',
+          category: 'Equipment',
+        },
+      }),
     ]);
-    console.log(`✅ Created ${products.length} products`);
+    console.log(`✅ Created ${products.length} products (${products.filter(p => ['Espresso', 'Coffee'].includes(p.category)).length} drinks + ${products.filter(p => !['Espresso', 'Coffee'].includes(p.category)).length} retail products)`);
 
     // Create recipes with ingredients
     console.log('\n3. Creating recipes...');

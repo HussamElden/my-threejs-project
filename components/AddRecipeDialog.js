@@ -17,6 +17,7 @@ import {
   Autocomplete,
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { getUnitDisplayText } from "../lib/units";
 
 export default function AddRecipeDialog({ open, onClose, onRecipeAdded }) {
   const [formData, setFormData] = useState({
@@ -203,7 +204,7 @@ export default function AddRecipeDialog({ open, onClose, onRecipeAdded }) {
                   >
                     {ingredients.map((ing) => (
                       <MenuItem key={ing.id} value={ing.id}>
-                        {ing.name} ({ing.unit})
+                        {ing.name} ({getUnitDisplayText(ing.unit)})
                       </MenuItem>
                     ))}
                   </Select>

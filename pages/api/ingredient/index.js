@@ -1,10 +1,17 @@
 import prisma from "../../../lib/prisma";
+import { isValidUnit } from "../../../lib/units";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
     // Create ingredient
     try {
       const { name, unit, currentStock, cost: costPerUnit } = req.body;
+      
+      // Validate the unit
+      if (!isValidUnit(unit)) {
+        return res.status(400).json({ error: "Invalid unit. Please select a valid unit from the dropdown." });
+      }
+      
       const ingredient = await prisma.ingredient.create({
         data: {
           name,
