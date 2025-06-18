@@ -10,13 +10,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { action, email, password, role } = req.body;
+    const { action, name, email, password, role } = req.body;
 
     if (action === "register") {
       // Create a new user
       try {
         const newUser = await prisma.user.create({
           data: {
+            name: name || "User",
             email,
             password, // In a real app, you'd hash the password
             role: role || "USER", // Default role to USER if not provided
