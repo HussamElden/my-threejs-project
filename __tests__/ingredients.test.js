@@ -69,12 +69,36 @@ describe('/api/ingredient', () => {
     expect(dbIngredient).not.toBeNull();
   });
 
-  test('handles database errors on POST', async () => {
+  test('rejects invalid units on POST', async () => {
     const { req, res } = createMocks({
       method: 'POST',
       body: {
-        // Missing required fields
-        name: 'Invalid Ingredient',
+        name: 'Test Ingredient',
+        unit: 'invalid_unit', // Invalid unit
+        currentStock: 100,
+        cost: 15.50,
+      },
+    });
+
+    await handler(req, res);
+
+    expect(res._getStatusCode()).toBe(400);
+    const response = JSON.parse(res._getData());
+    expect(response.error).toBe('Invalid unit. Please select a valid unit from the dropdown.');
+  });
+
+  test('handles database errors on POST', async () => {
+    // Mock Prisma to throw a database error
+    const originalCreate = prisma.ingredient.create;
+    prisma.ingredient.create = jest.fn().mockRejectedValue(new Error('Database connection failed'));
+
+    const { req, res } = createMocks({
+      method: 'POST',
+      body: {
+        name: 'Test Ingredient',
+        unit: 'g', // Valid unit to pass validation
+        currentStock: 100,
+        cost: 15.50,
       },
     });
 
@@ -83,6 +107,9 @@ describe('/api/ingredient', () => {
     expect(res._getStatusCode()).toBe(500);
     const response = JSON.parse(res._getData());
     expect(response.error).toBe('Failed to create ingredient');
+
+    // Restore the original method
+    prisma.ingredient.create = originalCreate;
   });
 
   test('deletes ingredient on DELETE', async () => {
